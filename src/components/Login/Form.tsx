@@ -1,23 +1,49 @@
-import type { FC } from "react";
-import { Inter } from "next/font/google";
-import Link from "next/link";
+import { FC, useRef, useState } from "react";
 import { useRouter } from "next/router";
-
-const inter400 = Inter({
-  subsets: ["latin"],
-  weight: "400",
-  style: "normal",
-});
 
 const Form: FC = () => {
   const router = useRouter();
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const enteredEmail = emailRef.current?.value;
+    const enteredPassword = passwordRef.current?.value;
+
+    try {
+      const response = await fetch(
+        "https://diet-ideas-production.up.railway.app",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: enteredEmail,
+            password: enteredPassword,
+            returnSecureToken: true,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+      } else {
+        const error = await response.json();
+        const errorMessage = "Authentication failed!";
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        router.push("/dashboard");
-      }}
+      onSubmit={handleSubmit}
       className="mt-16 w-full gap-2 px-8 flex flex-col"
     >
       <input
@@ -61,3 +87,5 @@ const Form: FC = () => {
 };
 
 export default Form;
+
+

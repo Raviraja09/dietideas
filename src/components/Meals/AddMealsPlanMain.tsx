@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
 
@@ -14,6 +14,27 @@ const inter500 = Inter({
 
 const AddMealsPlanMain: FC = () => {
   const router = useRouter();
+
+  const [meals, setMeals] = useState<MealsTableType[]>([]);
+
+  useEffect(() => {
+    const fetchMealsData = async () => {
+      try {
+        const response = await fetch("https://diet-ideas-production.up.railway.app/meals");
+        if (response.ok) {
+          const data = await response.json();
+          setMeals(data);
+        } else {
+          throw new Error("Failed to fetch meals data");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMealsData();
+  }, []);
+
 
   const mealsData: MealsTableType[] = [
     {
