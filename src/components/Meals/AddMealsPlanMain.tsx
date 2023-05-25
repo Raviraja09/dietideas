@@ -1,10 +1,9 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
 
 import MealsTable from "./MealsTable";
 import type { MealsTableType } from "@/types";
-import MealCourse from "./MealCourse";
 
 const inter500 = Inter({
   subsets: ["latin"],
@@ -12,29 +11,23 @@ const inter500 = Inter({
   style: "normal",
 });
 
-const AddMealsPlanMain: FC = () => {
+type Repo = {
+  name: string;
+  stargazers_count: number;
+};
+
+export const getStaticProps = async () => {
+  const res = await fetch('https://diet-ideas-production.up.railway.app');
+  const repo: Repo = await res.json();
+  return { props: { repo } };
+};
+
+type PageProps = {
+  repo: Repo;
+};
+
+const AddMealsPlanMain: FC<PageProps> = ({ repo }) => {
   const router = useRouter();
-
-  const [meals, setMeals] = useState<MealsTableType[]>([]);
-
-  useEffect(() => {
-    const fetchMealsData = async () => {
-      try {
-        const response = await fetch("https://diet-ideas-production.up.railway.app/meals");
-        if (response.ok) {
-          const data = await response.json();
-          setMeals(data);
-        } else {
-          throw new Error("Failed to fetch meals data");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchMealsData();
-  }, []);
-
 
   const mealsData: MealsTableType[] = [
     {

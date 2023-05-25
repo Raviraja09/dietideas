@@ -20,7 +20,20 @@ const inter400 = Inter({
   weight: "400",
   style: "normal",
 });
+type Repo = {
+  name: string;
+  stargazers_count: number;
+};
 
+export const getStaticProps = async () => {
+  const res = await fetch('https://diet-ideas-production.up.railway.app');
+  const repo: Repo = await res.json();
+  return { props: { repo } };
+};
+
+type PageProps = {
+  repo: Repo;
+};
 const BlogCard: FC<IBlogCardProps> = ({ blog }) => {
   return (
     <div className="flex p-5 items-center w-full bg-white">

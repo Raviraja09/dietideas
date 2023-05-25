@@ -1,5 +1,6 @@
 import { FC, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { Inter } from "next/font/google";
 
 const Form: FC = () => {
   const router = useRouter();
