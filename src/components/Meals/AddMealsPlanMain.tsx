@@ -17,7 +17,14 @@ type Repo = {
 };
 
 export const getStaticProps = async () => {
-  const res = await fetch('https://diet-ideas-production.up.railway.app');
+  const idToken = ''; 
+
+  const res = await fetch('https://diet-ideas-production.up.railway.app//v1/mealitem?search=&page=1&page_size=10', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
   const repo: Repo = await res.json();
   return { props: { repo } };
 };
@@ -25,6 +32,7 @@ export const getStaticProps = async () => {
 type PageProps = {
   repo: Repo;
 };
+
 
 const AddMealsPlanMain: FC<PageProps> = ({ repo }) => {
   const router = useRouter();

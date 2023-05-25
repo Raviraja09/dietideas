@@ -1,7 +1,13 @@
 import { FC, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 
+const inter400 = Inter({
+  subsets: ["latin"],
+  weight: "400",
+  style: "normal",
+})
 const Form: FC = () => {
   const router = useRouter();
   const emailRef = useRef<HTMLInputElement>(null);
@@ -13,10 +19,12 @@ const Form: FC = () => {
 
     const enteredEmail = emailRef.current?.value;
     const enteredPassword = passwordRef.current?.value;
+    console.log(enteredEmail);
+    console.log(enteredPassword);
 
     try {
       const response = await fetch(
-        "https://diet-ideas-production.up.railway.app",
+        "https://diet-ideas-production.up.railway.app/v1/signin",
         {
           method: "POST",
           body: JSON.stringify({
@@ -26,18 +34,19 @@ const Form: FC = () => {
           }),
           headers: {
             "Content-Type": "application/json",
-          },
+            },
         }
       );
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
       } else {
         const error = await response.json();
         const errorMessage = "Authentication failed!";
         throw new Error(errorMessage);
       }
-    } catch (error) {
+    } catch (error:any) {
       setErrorMessage(error.message);
     }
   };
@@ -49,11 +58,13 @@ const Form: FC = () => {
     >
       <input
         type="email"
+        ref={emailRef}
         placeholder="Email"
         className={`${inter400.className} p-3 text-base leading-[19px] w-full text-white bg-transparent border-b-2 border-white focus:outline-none focus:border-white placeholder:text-white placeholder:font-extralight font-extralight`}
       />
       <input
         type="password"
+        ref={passwordRef}
         placeholder="Password"
         className={`${inter400.className} p-3 text-base leading-[19px] w-full text-white bg-transparent border-b-2 border-white focus:outline-none focus:border-white placeholder:text-white`}
       />
