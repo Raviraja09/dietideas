@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 
+
+
 const inter400 = Inter({
   subsets: ["latin"],
   weight: "400",
@@ -41,6 +43,7 @@ const Form: FC = () => {
       if (response.ok) {
         const data = await response.json();
         console.log(data);
+        router.push('/dashboard');
       } else {
         const error = await response.json();
         const errorMessage = "Authentication failed!";

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
 
@@ -19,21 +19,20 @@ type Repo = {
 export const getStaticProps = async () => {
   const idToken = ''; 
 
-  const res = await fetch('https://diet-ideas-production.up.railway.app//v1/mealitem?search=&page=1&page_size=10', {
+  const res = await fetch('https://diet-ideas-production.up.railway.app/v1/mealitem?search=&page=1&page_size=10', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${idToken}`,
     },
   });
   const repo: Repo = await res.json();
+  console.log(idToken); 
   return { props: { repo } };
 };
 
 type PageProps = {
   repo: Repo;
 };
-
-
 const AddMealsPlanMain: FC<PageProps> = ({ repo }) => {
   const router = useRouter();
 

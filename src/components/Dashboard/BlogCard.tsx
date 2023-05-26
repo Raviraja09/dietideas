@@ -26,7 +26,7 @@ type Repo = {
 };
 
 export const getStaticProps = async () => {
-  const res = await fetch('https://diet-ideas-production.up.railway.app');
+  const res = await fetch('https://diet-ideas-production.up.railway.app//v1/blog?search=&page=1&page_size=10');
   const repo: Repo = await res.json();
   return { props: { repo } };
 };
