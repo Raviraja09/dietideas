@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
-
+import MealCourse from "./MealCourse";
 import MealsTable from "./MealsTable";
 import type { MealsTableType } from "@/types";
 
@@ -15,23 +15,11 @@ type Repo = {
   name: string;
   stargazers_count: number;
 };
-
-export const getStaticProps = async () => {
-  const idToken = ''; 
-
-  const res = await fetch('https://diet-ideas-production.up.railway.app/v1/mealitem?search=&page=1&page_size=10', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${idToken}`,
-    },
-  });
-  const repo: Repo = await res.json();
-  console.log(idToken); 
-  return { props: { repo } };
-};
-
 type PageProps = {
-  repo: Repo;
+  repo: {
+    name: string;
+    stargazers_count: number;
+  };
 };
 const AddMealsPlanMain: FC<PageProps> = ({ repo }) => {
   const router = useRouter();
@@ -184,7 +172,78 @@ const AddMealsPlanMain: FC<PageProps> = ({ repo }) => {
       ],
     },
   ]);
-
+    const updateMealItem = async (mealItemId: number, formData: any) => {
+      const idToken = 'YOUR_ID_TOKEN';
+    
+      try {
+        const res = await fetch(`https://diet-ideas-production.up.railway.app/v1/mealitem/${mealItemId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify(formData),
+        });
+    
+        if (!res.ok) {
+          throw new Error('Failed to update meal item');
+        }
+    
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    };
+    
+    const updatePartialMealItem = async (mealItemId: number, formData: any) => {
+      const idToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhdml2eXN5YXJhanUwOUBnbWFpbC5jb20iLCJpYXQiOjE2ODU1NTA1OTMsImV4cCI6MTY4ODE0MjU5M30.Xc2R_HJK37J20tNqtRTbVPmoGgAbxZZzzVjQ2C5TrmA';
+    
+      try {
+        const res = await fetch(`https://diet-ideas-production.up.railway.app/v1/mealitem/${mealItemId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify(formData),
+        });
+    
+        if (!res.ok) {
+          throw new Error('Failed to update meal item');
+        }
+    
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    };
+    
+    const deleteMealItem = async (mealItemId: number) => {
+      const idToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhdml2eXN5YXJhanUwOUBnbWFpbC5jb20iLCJpYXQiOjE2ODU1NTA1OTMsImV4cCI6MTY4ODE0MjU5M30.Xc2R_HJK37J20tNqtRTbVPmoGgAbxZZzzVjQ2C5TrmA';
+    
+      try {
+        const res = await fetch(`https://diet-ideas-production.up.railway.app/v1/mealitem/${mealItemId}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+    
+        if (!res.ok) {
+          throw new Error('Failed to delete meal item');
+        }
+    
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    };
   return (
     <div className="p-10 pb-20 flex flex-col pt-20 gap-16">
       <div className="flex flex-col gap-3 w-full">
@@ -226,6 +285,38 @@ const AddMealsPlanMain: FC<PageProps> = ({ repo }) => {
       <div className="h-48" />
     </div>
   );
+};
+export const getStaticProps = async () => {
+  const idToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhdml2eXN5YXJhanUwOUBnbWFpbC5jb20iLCJpYXQiOjE2ODU1NTA1OTMsImV4cCI6MTY4ODE0MjU5M30.Xc2R_HJK37J20tNqtRTbVPmoGgAbxZZzzVjQ2C5TrmA';
+
+  try {
+    const getRes = await fetch('https://diet-ideas-production.up.railway.app/v1/mealitem/1', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+  
+    const getRepo = await getRes.json();
+    console.log(getRepo);
+  
+    const postRes = await fetch('https://diet-ideas-production.up.railway.app/v1/mealitem/1', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ key: 'value' }),
+    });
+  
+    const postResponseData = await postRes.json();
+    console.log(postResponseData);
+  
+    return { props: { getRepo, postResponseData } };
+  } catch (error) {
+    console.error(error);
+    return { props: {} };
+  }
 };
 
 export default AddMealsPlanMain;

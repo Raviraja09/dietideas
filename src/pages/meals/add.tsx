@@ -1,32 +1,8 @@
 import { MainSection, Navbar } from "@/components";
 import type { NextPage } from "next";
 import Head from "next/head";
-
 import AddMealsPlanMain from "@/components/Meals/AddMealsPlanMain";
-
 const AddMealsPlan: NextPage = () => {
-  const AddMealsPlanMain: FC = () => {
-    const router = useRouter();
-  
-    const [meals, setMeals] = useState<MealsTableType[]>([]);
-  
-    useEffect(() => {
-      const fetchMealsData = async () => {
-        try {
-          const response = await fetch("https://diet-ideas-production.up.railway.app/meals");
-          if (response.ok) {
-            const data = await response.json();
-            setMeals(data);
-          } else {
-            throw new Error("Failed to fetch meals data");
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      };
-  
-      fetchMealsData();
-    }, []);
   return (
     <>
       <Head>
@@ -46,3 +22,4 @@ const AddMealsPlan: NextPage = () => {
 };
 
 export default AddMealsPlan;
+
