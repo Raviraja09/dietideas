@@ -286,6 +286,30 @@ const AddMealsPlanMain: FC<PageProps> = ({ repo }) => {
     </div>
   );
 };
+const addMealItem = async (mealsData:MealsTableType) => {
+  const idToken = '';
+  
+  try {
+    const res = await fetch('https://diet-ideas-production.up.railway.app/v1/mealitem?search=Al&page=1&page_size=10', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify(FormData),
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to add meal item');
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 export const getStaticProps = async () => {
   const idToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhdml2eXN5YXJhanUwOUBnbWFpbC5jb20iLCJpYXQiOjE2ODU1NTA1OTMsImV4cCI6MTY4ODE0MjU5M30.Xc2R_HJK37J20tNqtRTbVPmoGgAbxZZzzVjQ2C5TrmA';
 
@@ -296,27 +320,16 @@ export const getStaticProps = async () => {
         Authorization: `Bearer ${idToken}`,
       },
     });
-  
+
     const getRepo = await getRes.json();
     console.log(getRepo);
-  
-    const postRes = await fetch('https://diet-ideas-production.up.railway.app/v1/mealitem/1', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${idToken}`,
-      },
-      body: JSON.stringify({ key: 'value' }),
-    });
-  
-    const postResponseData = await postRes.json();
-    console.log(postResponseData);
-  
-    return { props: { getRepo, postResponseData } };
+
+    return { props: { repo: getRepo } };
   } catch (error) {
     console.error(error);
     return { props: {} };
   }
+  
 };
 
 export default AddMealsPlanMain;
